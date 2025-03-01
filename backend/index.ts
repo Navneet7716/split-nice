@@ -2,8 +2,8 @@ import "dotenv"
 import express, { type Request, type Response } from "express"
 import cors from "cors"
 import mongoose from "mongoose"
-import { loginController } from "./controller/authController"
-
+import { AuthRouter } from "./routes/auth.routes"
+import cookieParser from 'cookie-parser';
 
 
 const main = async () => {
@@ -12,12 +12,9 @@ const main = async () => {
 
     app.use(express.json())
     app.use(cors())
+    app.use(cookieParser());
 
     const PORT = process.env.PORT || 3000
-
-
-    app.post("/api/login", loginController)
-
 
     app.get("/health", async (req: Request, res: Response): Promise<any> => {
         try {
@@ -34,6 +31,8 @@ const main = async () => {
             })
         }
     })
+
+    app.use("/api/auth", AuthRouter)
 
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`)
